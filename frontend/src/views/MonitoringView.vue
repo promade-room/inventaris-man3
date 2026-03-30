@@ -50,11 +50,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import DataTable from '../../components/common/DataTable.vue'
-import ModalForm from '../../components/common/ModalForm.vue'
-import { useAlert } from '../../composables/useAlert'
-import { useAuthStore } from '../../stores/auth'
-import api from '../../services/api'
+import DataTable from '../components/common/DataTable.vue'
+import ModalForm from '../components/common/ModalForm.vue'
+import { useAlert } from '../composables/useAlert'
+import { useAuthStore } from '../stores/auth'
+import api from '../services/api'
 
 const alert = useAlert()
 const auth = useAuthStore()

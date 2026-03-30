@@ -63,8 +63,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useAlert } from '../../composables/useAlert'
-import api from '../../services/api'
+import { useAlert } from '../composables/useAlert'
+import api from '../services/api'
 
 const alert = useAlert()
 const jenis = ref('aset')
