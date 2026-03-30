@@ -47,12 +47,16 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="text-horizon-muted border-b border-horizon-border">
-              <th v-for="col in reportColumns" :key="col" class="py-2 text-left px-2">{{ col }}</th>
+              <th v-for="col in columns" :key="col.key" class="py-2 text-left px-2">{{ col.label }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(row, i) in reportData" :key="i" class="border-b border-horizon-border hover:bg-horizon-bg/50">
-              <td v-for="col in reportColumns" :key="col" class="py-2 px-2">{{ row[col] }}</td>
+              <td v-for="col in columns" :key="col.key" class="py-2 px-2">
+                <template v-if="col.format === 'currency'">{{ formatCurrency(row[col.key]) }}</template>
+                <template v-else-if="col.format === 'date'">{{ formatDate(row[col.key]) }}</template>
+                <template v-else>{{ row[col.key] }}</template>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -77,11 +81,41 @@ const kategoriList = ref([])
 
 const jenisLabel = computed(() => ({ aset: 'Data Aset', penyusutan: 'Penyusutan', monitoring: 'Monitoring' }[jenis.value]))
 
-const reportColumns = computed(() => {
-  if (jenis.value === 'aset') return ['Kode', 'Nama Aset', 'Kategori', 'Lokasi', 'Harga', 'Status']
-  if (jenis.value === 'penyusutan') return ['Kode', 'Nama Aset', 'Harga Perolehan', 'Penyusutan/Tahun', 'Nilai Buku']
-  return ['Nama Aset', 'Kode', 'Tanggal Cek', 'Kondisi', 'Keterangan']
-})
+const columnMap = {
+  aset: [
+    { key: 'kode_aset', label: 'Kode' },
+    { key: 'nama_aset', label: 'Nama Aset' },
+    { key: 'nama_kategori', label: 'Kategori' },
+    { key: 'nama_lokasi', label: 'Lokasi' },
+    { key: 'harga_perolehan', label: 'Harga Perolehan', format: 'currency' },
+    { key: 'status_aset', label: 'Status' },
+  ],
+  penyusutan: [
+    { key: 'kode_aset', label: 'Kode' },
+    { key: 'nama_aset', label: 'Nama Aset' },
+    { key: 'harga_perolehan', label: 'Harga Perolehan', format: 'currency' },
+    { key: 'penyusutan_tahunan', label: 'Penyusutan/Tahun', format: 'currency' },
+    { key: 'nilai_buku', label: 'Nilai Buku', format: 'currency' },
+  ],
+  monitoring: [
+    { key: 'nama_aset', label: 'Nama Aset' },
+    { key: 'kode_aset', label: 'Kode' },
+    { key: 'tgl_cek', label: 'Tanggal Cek', format: 'date' },
+    { key: 'kondisi', label: 'Kondisi' },
+    { key: 'keterangan', label: 'Keterangan' },
+  ]
+}
+
+const columns = computed(() => columnMap[jenis.value] || [])
+
+function formatCurrency(v) {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(v || 0)
+}
+
+function formatDate(d) {
+  if (!d) return '-'
+  return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+}
 
 async function loadReport() {
   loading.value = true
@@ -103,7 +137,8 @@ async function exportFile(format) {
     if (periodeAwal.value) params.periode_awal = periodeAwal.value
     if (periodeAkhir.value) params.periode_akhir = periodeAkhir.value
     const res = await api.get(`/laporan/export/${jenis.value}`, { params, responseType: 'blob' })
-    const url = window.URL.createObjectURL(new Blob([res.data]))
+    const mimeType = format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    const url = window.URL.createObjectURL(new Blob([res.data], { type: mimeType }))
     const link = document.createElement('a')
     link.href = url
     link.download = `laporan-${jenis.value}.${format}`

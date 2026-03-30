@@ -2,6 +2,7 @@ const router = require('express').Router()
 const auth = require('../middleware/auth')
 const ctrl = require('../controllers/laporan.controller')
 const { exportAset, exportPenyusutan, exportMonitoring } = require('../utils/exportExcel')
+const { exportAsetPdf, exportPenyusutanPdf, exportMonitoringPdf } = require('../utils/exportPdf')
 const db = require('../config/db')
 
 router.use(auth)
@@ -20,6 +21,7 @@ router.get('/export/aset', async (req, res) => {
     query += ' ORDER BY a.nama_aset'
     const [rows] = await db.query(query, params)
     if (req.query.format === 'xlsx') return exportAset(res, rows)
+    if (req.query.format === 'pdf') return exportAsetPdf(res, rows)
     res.json({ success: true, data: rows })
   } catch (err) { res.status(500).json({ success: false, message: err.message }) }
 })
@@ -34,6 +36,7 @@ router.get('/export/penyusutan', async (req, res) => {
       WHERE a.status_aset = 'aktif' ORDER BY a.nama_aset
     `)
     if (req.query.format === 'xlsx') return exportPenyusutan(res, rows)
+    if (req.query.format === 'pdf') return exportPenyusutanPdf(res, rows)
     res.json({ success: true, data: rows })
   } catch (err) { res.status(500).json({ success: false, message: err.message }) }
 })
@@ -47,6 +50,7 @@ router.get('/export/monitoring', async (req, res) => {
     query += ' ORDER BY m.tgl_cek DESC'
     const [rows] = await db.query(query, params)
     if (req.query.format === 'xlsx') return exportMonitoring(res, rows)
+    if (req.query.format === 'pdf') return exportMonitoringPdf(res, rows)
     res.json({ success: true, data: rows })
   } catch (err) { res.status(500).json({ success: false, message: err.message }) }
 })
