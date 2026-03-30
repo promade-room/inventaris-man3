@@ -102,7 +102,7 @@ async function exportFile(format) {
     if (filterKategori.value) params.kategori = filterKategori.value
     if (periodeAwal.value) params.periode_awal = periodeAwal.value
     if (periodeAkhir.value) params.periode_akhir = periodeAkhir.value
-    const res = await api.get(`/export/${jenis.value}`, { params, responseType: 'blob' })
+    const res = await api.get(`/laporan/export/${jenis.value}`, { params, responseType: 'blob' })
     const url = window.URL.createObjectURL(new Blob([res.data]))
     const link = document.createElement('a')
     link.href = url
