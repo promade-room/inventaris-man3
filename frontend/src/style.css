@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Horizon Theme */
+@theme {
+  --color-horizon-bg: #1a1b2e;
+  --color-horizon-surface: #232540;
+  --color-horizon-card: #2a2d4a;
+  --color-horizon-border: #363960;
+  --color-horizon-coral: #e95678;
+  --color-horizon-teal: #59e1c5;
+  --color-horizon-amber: #f09f4a;
+  --color-horizon-purple: #b8a5f7;
+  --color-horizon-blue: #6cb6ff;
+  --color-horizon-text: #e0e0f0;
+  --color-horizon-muted: #8b8fa3;
+  --color-horizon-success: #59e1c5;
+  --color-horizon-warning: #f09f4a;
+  --color-horizon-danger: #e95678;
+}
+
+body {
+  background-color: var(--color-horizon-bg);
+  color: var(--color-horizon-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-horizon-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-horizon-border);
+  border-radius: 3px;
+}
+
+/* SweetAlert2 Horizon overrides */
+.swal2-popup {
+  background: var(--color-horizon-surface) !important;
+  color: var(--color-horizon-text) !important;
+  border: 1px solid var(--color-horizon-border) !important;
+  border-radius: 12px !important;
+}
+.swal2-title {
+  color: var(--color-horizon-text) !important;
+}
+.swal2-html-container {
+  color: var(--color-horizon-muted) !important;
+}
+.swal2-confirm {
+  background: var(--color-horizon-coral) !important;
+  border-radius: 8px !important;
+}
+.swal2-cancel {
+  background: var(--color-horizon-border) !important;
+  border-radius: 8px !important;
+}
+.swal2-denial {
+  background: var(--color-horizon-border) !important;
+}
