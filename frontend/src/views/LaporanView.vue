@@ -33,8 +33,8 @@
       </div>
       <div class="flex gap-3 mt-4">
         <button @click="loadReport" class="px-4 py-2 rounded-lg bg-horizon-coral text-white text-sm hover:bg-horizon-coral/80">Tampilkan</button>
-        <button @click="exportFile('xlsx')" :disabled="!reportData.length" class="px-4 py-2 rounded-lg bg-horizon-teal/10 text-horizon-teal text-sm hover:bg-horizon-teal/20 disabled:opacity-50">📊 Export Excel</button>
-        <button @click="exportFile('pdf')" :disabled="!reportData.length" class="px-4 py-2 rounded-lg bg-horizon-amber/10 text-horizon-amber text-sm hover:bg-horizon-amber/20 disabled:opacity-50">📄 Export PDF</button>
+        <button @click="exportFile('xlsx')" class="px-4 py-2 rounded-lg bg-horizon-teal/10 text-horizon-teal text-sm hover:bg-horizon-teal/20">📊 Export Excel</button>
+        <button @click="exportFile('pdf')" class="px-4 py-2 rounded-lg bg-horizon-amber/10 text-horizon-amber text-sm hover:bg-horizon-amber/20">📄 Export PDF</button>
       </div>
     </div>
 

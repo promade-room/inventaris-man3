@@ -6,6 +6,8 @@ exports.aset = async (req, res) => {
                  FROM aset a LEFT JOIN kategori k ON a.id_kategori = k.id LEFT JOIN lokasi l ON a.id_lokasi = l.id WHERE 1=1`
     const params = []
     if (req.query.kategori) { query += ' AND a.id_kategori = ?'; params.push(req.query.kategori) }
+    if (req.query.periode_awal) { query += ' AND a.tgl_perolehan >= ?'; params.push(req.query.periode_awal) }
+    if (req.query.periode_akhir) { query += ' AND a.tgl_perolehan <= ?'; params.push(req.query.periode_akhir) }
     query += ' ORDER BY a.nama_aset'
     const [rows] = await db.query(query, params)
     res.json({ success: true, data: rows })

@@ -2,7 +2,14 @@ const db = require('../config/db')
 
 exports.list = async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM kategori ORDER BY nama_kategori')
+    const query = `
+      SELECT k.id, k.nama_kategori, k.keterangan, COUNT(a.id) AS jumlah_aset
+      FROM kategori k
+      LEFT JOIN aset a ON k.id = a.id_kategori
+      GROUP BY k.id
+      ORDER BY k.nama_kategori
+    `
+    const [rows] = await db.query(query)
     res.json({ success: true, data: rows })
   } catch (err) { res.status(500).json({ success: false, message: err.message }) }
 }

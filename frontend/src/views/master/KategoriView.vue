@@ -8,6 +8,11 @@
     </div>
 
     <DataTable :columns="columns" :data="items" :loading="loading" search-placeholder="Cari kategori...">
+      <template #cell-jumlah_aset="{ value }">
+        <span class="inline-block px-2 py-1 rounded bg-horizon-card text-horizon-accent border border-horizon-border text-xs font-semibold">
+          {{ value || 0 }} Aset
+        </span>
+      </template>
       <template #cell-keterangan="{ value }">
         <span class="text-horizon-muted">{{ value || '-' }}</span>
       </template>
@@ -40,6 +45,7 @@ import api from '../../services/api'
 const alert = useAlert()
 const columns = [
   { key: 'nama_kategori', label: 'Nama Kategori' },
+  { key: 'jumlah_aset', label: 'Jumlah Aset' },
   { key: 'keterangan', label: 'Keterangan' },
 ]
 

@@ -8,12 +8,16 @@ function createPdfStream(res, title) {
   return doc
 }
 
-function drawHeader(doc, title) {
+function drawHeader(doc, title, periodeText) {
   doc.fontSize(16).font('Helvetica-Bold').text('Inventaris MAN 3 Palembang', { align: 'center' })
   doc.moveDown(0.3)
   doc.fontSize(10).font('Helvetica').text(`Laporan: ${title}`, { align: 'center' })
-  doc.moveDown(0.3)
-  doc.fontSize(8).text(`Dicetak: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`, { align: 'center' })
+  doc.moveDown(0.2)
+  if (periodeText) {
+    doc.fontSize(8.5).font('Helvetica-Oblique').text(`Periode: ${periodeText}`, { align: 'center' })
+    doc.moveDown(0.2)
+  }
+  doc.fontSize(8).font('Helvetica').text(`Dicetak: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`, { align: 'center' })
   doc.moveDown(0.5)
   doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke()
   doc.moveDown(0.5)
@@ -54,9 +58,9 @@ function drawTable(doc, headers, rows, colWidths) {
   doc.y = y
 }
 
-function exportAsetPdf(res, data) {
+function exportAsetPdf(res, data, periodeText) {
   const doc = createPdfStream(res, 'data-aset')
-  drawHeader(doc, 'Data Aset')
+  drawHeader(doc, 'Data Aset', periodeText)
   const headers = ['No', 'Kode', 'Nama Aset', 'Kategori', 'Lokasi', 'Harga', 'Status']
   const colWidths = [25, 60, 120, 80, 80, 90, 60]
   const rows = data.map((r, i) => [
@@ -67,9 +71,9 @@ function exportAsetPdf(res, data) {
   doc.end()
 }
 
-function exportPenyusutanPdf(res, data) {
+function exportPenyusutanPdf(res, data, periodeText) {
   const doc = createPdfStream(res, 'laporan-penyusutan')
-  drawHeader(doc, 'Laporan Penyusutan Aset')
+  drawHeader(doc, 'Laporan Penyusutan Aset', periodeText)
   const headers = ['No', 'Kode', 'Nama Aset', 'Harga Perolehan', 'Penyusutan/Thn', 'Nilai Buku']
   const colWidths = [25, 55, 130, 100, 100, 100]
   const rows = data.map((r, i) => [
@@ -80,9 +84,9 @@ function exportPenyusutanPdf(res, data) {
   doc.end()
 }
 
-function exportMonitoringPdf(res, data) {
+function exportMonitoringPdf(res, data, periodeText) {
   const doc = createPdfStream(res, 'laporan-monitoring')
-  drawHeader(doc, 'Laporan Monitoring Aset')
+  drawHeader(doc, 'Laporan Monitoring Aset', periodeText)
   const headers = ['No', 'Nama Aset', 'Kode', 'Tanggal Cek', 'Kondisi', 'Keterangan']
   const colWidths = [25, 120, 60, 80, 80, 140]
   const rows = data.map((r, i) => [
