@@ -15,12 +15,27 @@
             <option value="monitoring">Monitoring</option>
           </select>
         </div>
-        <div>
+        <div v-if="jenis === 'aset'">
           <label class="block text-xs text-horizon-muted mb-1">Kategori</label>
           <select v-model="filterKategori" class="w-full px-3 py-2 rounded-lg bg-horizon-bg border border-horizon-border text-horizon-text text-sm">
             <option value="">Semua</option>
             <option v-for="k in kategoriList" :key="k.id" :value="k.id">{{ k.nama_kategori }}</option>
           </select>
+        </div>
+        <div v-else-if="jenis === 'monitoring'">
+          <label class="block text-xs text-horizon-muted mb-1">Kondisi</label>
+          <select v-model="filterKondisi" class="w-full px-3 py-2 rounded-lg bg-horizon-bg border border-horizon-border text-horizon-text text-sm">
+            <option value="">Semua Kondisi</option>
+            <option value="baik">Baik</option>
+            <option value="rusak_ringan">Rusak Ringan</option>
+            <option value="rusak_berat">Rusak Berat</option>
+          </select>
+        </div>
+        <div v-else>
+          <label class="block text-xs text-horizon-muted mb-1">Keterangan Filter</label>
+          <div class="px-3 py-2 rounded-lg bg-horizon-bg/50 border border-horizon-border text-horizon-muted text-sm">
+            Semua Aset Aktif
+          </div>
         </div>
         <div>
           <label class="block text-xs text-horizon-muted mb-1">Periode Awal</label>
@@ -66,18 +81,27 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useAlert } from '../composables/useAlert'
 import api from '../services/api'
 
 const alert = useAlert()
 const jenis = ref('aset')
 const filterKategori = ref('')
+const filterKondisi = ref('')
 const periodeAwal = ref('')
 const periodeAkhir = ref('')
 const loading = ref(false)
 const reportData = ref([])
 const kategoriList = ref([])
+
+// Otomatis kosongkan data lama dan muat data baru saat jenis laporan diubah
+watch(jenis, () => {
+  reportData.value = []
+  filterKategori.value = ''
+  filterKondisi.value = ''
+  loadReport()
+})
 
 const jenisLabel = computed(() => ({ aset: 'Data Aset', penyusutan: 'Penyusutan', monitoring: 'Monitoring' }[jenis.value]))
 
@@ -119,9 +143,11 @@ function formatDate(d) {
 
 async function loadReport() {
   loading.value = true
+  reportData.value = []
   try {
     const params = {}
-    if (filterKategori.value) params.kategori = filterKategori.value
+    if (jenis.value === 'aset' && filterKategori.value) params.kategori = filterKategori.value
+    if (jenis.value === 'monitoring' && filterKondisi.value) params.kondisi = filterKondisi.value
     if (periodeAwal.value) params.periode_awal = periodeAwal.value
     if (periodeAkhir.value) params.periode_akhir = periodeAkhir.value
     const { data } = await api.get(`/laporan/${jenis.value}`, { params })
@@ -133,7 +159,8 @@ async function loadReport() {
 async function exportFile(format) {
   try {
     const params = { format }
-    if (filterKategori.value) params.kategori = filterKategori.value
+    if (jenis.value === 'aset' && filterKategori.value) params.kategori = filterKategori.value
+    if (jenis.value === 'monitoring' && filterKondisi.value) params.kondisi = filterKondisi.value
     if (periodeAwal.value) params.periode_awal = periodeAwal.value
     if (periodeAkhir.value) params.periode_akhir = periodeAkhir.value
     const res = await api.get(`/laporan/export/${jenis.value}`, { params, responseType: 'blob' })
@@ -153,5 +180,6 @@ onMounted(async () => {
     const { data } = await api.get('/kategori')
     kategoriList.value = data.data
   } catch {}
+  loadReport()
 })
 </script>
