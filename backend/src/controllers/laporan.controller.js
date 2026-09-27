@@ -8,7 +8,7 @@ exports.aset = async (req, res) => {
     if (req.query.kategori) { query += ' AND a.id_kategori = ?'; params.push(req.query.kategori) }
     if (req.query.periode_awal) { query += ' AND a.tgl_perolehan >= ?'; params.push(req.query.periode_awal) }
     if (req.query.periode_akhir) { query += ' AND a.tgl_perolehan <= ?'; params.push(req.query.periode_akhir) }
-    query += ' ORDER BY a.nama_aset'
+    query += ' ORDER BY a.tgl_perolehan DESC, a.nama_aset ASC'
     const [rows] = await db.query(query, params)
     res.json({ success: true, data: rows })
   } catch (err) { res.status(500).json({ success: false, message: err.message }) }
@@ -27,7 +27,7 @@ exports.penyusutan = async (req, res) => {
     const params = []
     if (req.query.periode_awal) { query += ' AND a.tgl_perolehan >= ?'; params.push(req.query.periode_awal) }
     if (req.query.periode_akhir) { query += ' AND a.tgl_perolehan <= ?'; params.push(req.query.periode_akhir) }
-    query += ' ORDER BY a.nama_aset'
+    query += ' ORDER BY a.tgl_perolehan DESC, a.nama_aset ASC'
     const [rows] = await db.query(query, params)
     res.json({ success: true, data: rows })
   } catch (err) { res.status(500).json({ success: false, message: err.message }) }
