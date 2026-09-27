@@ -61,10 +61,12 @@ function drawTable(doc, headers, rows, colWidths) {
 function exportAsetPdf(res, data, periodeText) {
   const doc = createPdfStream(res, 'data-aset')
   drawHeader(doc, 'Data Aset', periodeText)
-  const headers = ['No', 'Kode', 'Nama Aset', 'Kategori', 'Lokasi', 'Harga', 'Status']
-  const colWidths = [25, 60, 120, 80, 80, 90, 60]
+  const headers = ['No', 'Kode', 'Nama Aset', 'Tgl Perolehan', 'Kategori', 'Lokasi', 'Harga', 'Status']
+  const colWidths = [20, 50, 105, 65, 65, 65, 85, 55]
   const rows = data.map((r, i) => [
-    i + 1, r.kode_aset, r.nama_aset, r.nama_kategori, r.nama_lokasi,
+    i + 1, r.kode_aset, r.nama_aset,
+    r.tgl_perolehan ? new Date(r.tgl_perolehan).toLocaleDateString('id-ID') : '-',
+    r.nama_kategori, r.nama_lokasi,
     formatRp(r.harga_perolehan), r.status_aset
   ])
   drawTable(doc, headers, rows, colWidths)
@@ -74,10 +76,11 @@ function exportAsetPdf(res, data, periodeText) {
 function exportPenyusutanPdf(res, data, periodeText) {
   const doc = createPdfStream(res, 'laporan-penyusutan')
   drawHeader(doc, 'Laporan Penyusutan Aset', periodeText)
-  const headers = ['No', 'Kode', 'Nama Aset', 'Harga Perolehan', 'Penyusutan/Thn', 'Nilai Buku']
-  const colWidths = [25, 55, 130, 100, 100, 100]
+  const headers = ['No', 'Kode', 'Nama Aset', 'Tgl Perolehan', 'Harga Perolehan', 'Penyusutan/Thn', 'Nilai Buku']
+  const colWidths = [25, 55, 115, 70, 85, 80, 80]
   const rows = data.map((r, i) => [
     i + 1, r.kode_aset, r.nama_aset,
+    r.tgl_perolehan ? new Date(r.tgl_perolehan).toLocaleDateString('id-ID') : '-',
     formatRp(r.harga_perolehan), formatRp(r.penyusutan_tahunan), formatRp(r.nilai_buku)
   ])
   drawTable(doc, headers, rows, colWidths)

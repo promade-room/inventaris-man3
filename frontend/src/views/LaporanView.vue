@@ -109,6 +109,7 @@ const columnMap = {
   aset: [
     { key: 'kode_aset', label: 'Kode' },
     { key: 'nama_aset', label: 'Nama Aset' },
+    { key: 'tgl_perolehan', label: 'Tgl Perolehan', format: 'date' },
     { key: 'nama_kategori', label: 'Kategori' },
     { key: 'nama_lokasi', label: 'Lokasi' },
     { key: 'harga_perolehan', label: 'Harga Perolehan', format: 'currency' },
@@ -117,6 +118,7 @@ const columnMap = {
   penyusutan: [
     { key: 'kode_aset', label: 'Kode' },
     { key: 'nama_aset', label: 'Nama Aset' },
+    { key: 'tgl_perolehan', label: 'Tgl Perolehan', format: 'date' },
     { key: 'harga_perolehan', label: 'Harga Perolehan', format: 'currency' },
     { key: 'penyusutan_tahunan', label: 'Penyusutan/Tahun', format: 'currency' },
     { key: 'nilai_buku', label: 'Nilai Buku', format: 'currency' },

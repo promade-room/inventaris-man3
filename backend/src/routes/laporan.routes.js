@@ -24,7 +24,7 @@ router.get('/monitoring', ctrl.monitoring)
 // Export endpoints
 router.get('/export/aset', async (req, res) => {
   try {
-    let query = `SELECT a.kode_aset, a.nama_aset, k.nama_kategori, l.nama_lokasi, a.harga_perolehan, a.status_aset
+    let query = `SELECT a.kode_aset, a.nama_aset, a.tgl_perolehan, k.nama_kategori, l.nama_lokasi, a.harga_perolehan, a.status_aset
                  FROM aset a LEFT JOIN kategori k ON a.id_kategori = k.id LEFT JOIN lokasi l ON a.id_lokasi = l.id WHERE 1=1`
     const params = []
     if (req.query.kategori) { query += ' AND a.id_kategori = ?'; params.push(req.query.kategori) }
@@ -41,15 +41,18 @@ router.get('/export/aset', async (req, res) => {
 
 router.get('/export/penyusutan', async (req, res) => {
   try {
-    // Note: Penyusutan relies heavily on existing 'aktif' table and doesn't explicitly store daily dates, 
-    // but just in case frontend passes them, we ensure consistency. (Typically it maps by tahun_ke).
-    const [rows] = await db.query(`
-      SELECT a.kode_aset, a.nama_aset, a.harga_perolehan,
+    let query = `
+      SELECT a.kode_aset, a.nama_aset, a.tgl_perolehan, a.harga_perolehan,
              ROUND((a.harga_perolehan - a.nilai_residu) / a.umur_ekonomis, 2) AS penyusutan_tahunan,
              COALESCE(p.nilai_buku, a.harga_perolehan) AS nilai_buku
       FROM aset a LEFT JOIN penyusutan p ON a.id = p.id_aset AND p.tahun_ke = a.umur_ekonomis
-      WHERE a.status_aset = 'aktif' ORDER BY a.nama_aset
-    `)
+      WHERE a.status_aset = 'aktif'
+    `
+    const params = []
+    if (req.query.periode_awal) { query += ' AND a.tgl_perolehan >= ?'; params.push(req.query.periode_awal) }
+    if (req.query.periode_akhir) { query += ' AND a.tgl_perolehan <= ?'; params.push(req.query.periode_akhir) }
+    query += ' ORDER BY a.nama_aset'
+    const [rows] = await db.query(query, params)
     const pText = getPeriodeText(req)
     if (req.query.format === 'xlsx') return exportPenyusutan(res, rows)
     if (req.query.format === 'pdf') return exportPenyusutanPdf(res, rows, pText)

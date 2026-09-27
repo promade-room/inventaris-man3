@@ -8,6 +8,7 @@ async function exportAset(res, data) {
     { header: 'No', key: 'no', width: 5 },
     { header: 'Kode Aset', key: 'kode_aset', width: 15 },
     { header: 'Nama Aset', key: 'nama_aset', width: 30 },
+    { header: 'Tgl Perolehan', key: 'tgl_perolehan', width: 15 },
     { header: 'Kategori', key: 'nama_kategori', width: 20 },
     { header: 'Lokasi', key: 'nama_lokasi', width: 20 },
     { header: 'Harga Perolehan', key: 'harga_perolehan', width: 20 },
@@ -19,7 +20,11 @@ async function exportAset(res, data) {
   sheet.getRow(1).font = { color: { argb: 'FFFFFFFF' }, bold: true }
 
   data.forEach((row, i) => {
-    sheet.addRow({ no: i + 1, ...row })
+    sheet.addRow({
+      no: i + 1,
+      ...row,
+      tgl_perolehan: row.tgl_perolehan ? new Date(row.tgl_perolehan).toLocaleDateString('id-ID') : '-'
+    })
   })
 
   sheet.getColumn('harga_perolehan').numFmt = '#,##0'
@@ -37,6 +42,7 @@ async function exportPenyusutan(res, data) {
     { header: 'No', key: 'no', width: 5 },
     { header: 'Kode Aset', key: 'kode_aset', width: 15 },
     { header: 'Nama Aset', key: 'nama_aset', width: 30 },
+    { header: 'Tgl Perolehan', key: 'tgl_perolehan', width: 15 },
     { header: 'Harga Perolehan', key: 'harga_perolehan', width: 20 },
     { header: 'Penyusutan/Tahun', key: 'penyusutan_tahunan', width: 20 },
     { header: 'Nilai Buku', key: 'nilai_buku', width: 20 },
@@ -46,7 +52,11 @@ async function exportPenyusutan(res, data) {
   sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF59E1C5' } }
 
   data.forEach((row, i) => {
-    sheet.addRow({ no: i + 1, ...row })
+    sheet.addRow({
+      no: i + 1,
+      ...row,
+      tgl_perolehan: row.tgl_perolehan ? new Date(row.tgl_perolehan).toLocaleDateString('id-ID') : '-'
+    })
   })
 
   ;['harga_perolehan', 'penyusutan_tahunan', 'nilai_buku'].forEach(col => {
